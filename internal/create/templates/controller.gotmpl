@@ -1,0 +1,32 @@
+package {{ .Name }} 
+
+import (
+    "net/http"
+    "kyugo.dev/kyugo/v1"
+)
+
+// Controller handles requests for {{ .Name }} resources
+type Controller struct{}
+
+func NewController() *Controller {
+    return &Controller{}
+}
+
+func (ctrl *Controller) Init(s *kyugo.Server) {
+
+}
+
+func (c *Controller) Index(resp *kyugo.Response, req *kyugo.Request) {}
+
+func (c *Controller) Create(resp *kyugo.Response, req *kyugo.Request) {}
+
+func (c *Controller) Show(resp *kyugo.Response, req *kyugo.Request) {}
+
+func (c *Controller) Update(resp *kyugo.Response, req *kyugo.Request) {}
+
+func (c *Controller) Delete(resp *kyugo.Response, req *kyugo.Request) {}
+
+func (ctrl *Controller) RegisterRoutes(router *kyugo.Router) {
+    // register routes for {{ .Name }} here
+}
+

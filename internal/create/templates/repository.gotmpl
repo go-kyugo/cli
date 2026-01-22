@@ -1,0 +1,12 @@
+package repository
+
+// {{ .StructName }} handles DB operations for {{ .Name }}
+type {{ .StructName }} struct{}
+
+func New{{ .StructName }}() *{{ .StructName }} {
+    return &{{ .StructName }}{}
+}
+
+func (r *{{ .StructName }}) FindAll() ([]{{ .ModelName }}, error) {
+    return nil, nil
+}

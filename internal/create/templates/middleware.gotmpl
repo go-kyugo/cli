@@ -1,0 +1,13 @@
+package middleware
+
+import (
+    "net/http"
+	"kyugo.dev/kyugo/v1/"
+)
+
+func {{ .StructName }}Middleware(next http.Handler) http.Handler {
+    return http.HandlerFunc(func(res kyugo.Response, req *kyugo.Request) {
+        // TODO: implement {{ .Name }} middleware
+        next.ServeHTTP(res, req)
+    })
+}
