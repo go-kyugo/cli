@@ -3,22 +3,23 @@ package migrate
 import (
 	"fmt"
 	"os"
-	"os/exec"
 	"path/filepath"
+	"strconv"
 
+	mg "github.com/golang-migrate/migrate/v4"
+	_ "github.com/golang-migrate/migrate/v4/database/mysql"
+	_ "github.com/golang-migrate/migrate/v4/database/postgres"
+	_ "github.com/golang-migrate/migrate/v4/database/sqlite"
+	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"github.com/spf13/cobra"
 
-	"github.com/go-kyugo/kyugo/internal/config"
-	"github.com/go-kyugo/kyugo/internal/ui"
+	"github.com/go-kyugo/kygo/internal/config"
+	"github.com/go-kyugo/kygo/internal/ui"
 )
 
 func Run(migrationsPath, database string, args ...string) error {
 	if database == "" {
 		return fmt.Errorf("database URL is required (use --database or set DATABASE_URL)")
-	}
-	bin, err := exec.LookPath("migrate")
-	if err != nil {
-		return fmt.Errorf("migrate binary not found in PATH: %w", err)
 	}
 
 	ui.Info(fmt.Sprintf("Running migrations from %s -> %s", migrationsPath, database))
@@ -27,17 +28,92 @@ func Run(migrationsPath, database string, args ...string) error {
 		return err
 	}
 	pathArg := "file://" + abs
-	cmdArgs := []string{"-path", pathArg, "-database", database}
-	cmdArgs = append(cmdArgs, args...)
-	cmd := exec.Command(bin, cmdArgs...)
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-	err = cmd.Run()
+
+	m, err := mg.New(pathArg, database)
 	if err != nil {
+		ui.Errorf("Failed to initialize migrate: %w", err)
 		return err
 	}
-	ui.Success("Migrations completed")
-	return nil
+	defer func() {
+		_, _ = m.Close()
+	}()
+
+	if len(args) == 0 {
+		ui.Errorf("No migrate action provided")
+		return err
+	}
+
+	action := args[0]
+	switch action {
+	case "up":
+		if len(args) == 1 {
+			if err := m.Up(); err != nil && err != mg.ErrNoChange {
+				return err
+			}
+			ui.Success("Migrations completed")
+			return nil
+		}
+		// step value provided
+		steps, err := strconv.Atoi(args[1])
+		if err != nil {
+			ui.Errorf(fmt.Sprintf("Invalid steps: %v", err))
+			return err
+		}
+		if err := m.Steps(steps); err != nil && err != mg.ErrNoChange {
+			return err
+		}
+		ui.Success("Migrations completed")
+		return nil
+
+	case "down":
+		steps := 1
+		if len(args) == 2 {
+			s, err := strconv.Atoi(args[1])
+			if err != nil {
+				return fmt.Errorf("invalid steps: %w", err)
+			}
+			steps = s
+		}
+		if err := m.Steps(-steps); err != nil && err != mg.ErrNoChange {
+			return err
+		}
+		ui.Success("Rollback completed")
+		return nil
+
+	case "force":
+		if len(args) < 2 {
+			return fmt.Errorf("force requires a version argument")
+		}
+		v, err := strconv.Atoi(args[1])
+		if err != nil {
+			return fmt.Errorf("invalid version: %w", err)
+		}
+		if err := m.Force(v); err != nil {
+			return err
+		}
+		ui.Success("Force applied")
+		return nil
+
+	case "version":
+		v, dirty, err := m.Version()
+		if err != nil {
+			if err == mg.ErrNilVersion {
+				ui.Info("No migration version set")
+				return nil
+			}
+			return err
+		}
+		if dirty {
+			ui.Info(fmt.Sprintf("Version: %d (dirty)", v))
+		} else {
+			ui.Info(fmt.Sprintf("Version: %d", v))
+		}
+		return nil
+
+	default:
+		ui.Errorf("Unknown migrate action: %s", action)
+		return err
+	}
 }
 
 func makeUpCmd() *cobra.Command {

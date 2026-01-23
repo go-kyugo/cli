@@ -5,15 +5,15 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/go-kyugo/kyugo/internal/create"
-	initpkg "github.com/go-kyugo/kyugo/internal/init"
-	migrate "github.com/go-kyugo/kyugo/internal/migrate"
-	"github.com/go-kyugo/kyugo/internal/ui"
+	"github.com/go-kyugo/kygo/internal/create"
+	initpkg "github.com/go-kyugo/kygo/internal/init"
+	migrate "github.com/go-kyugo/kygo/internal/migrate"
+	"github.com/go-kyugo/kygo/internal/ui"
 )
 
 var rootCmd = &cobra.Command{
-	Use:     "kyugo",
-	Short:   "Kyugo CLI",
+	Use:     "kygo",
+	Short:   "Kygo CLI",
 	Version: "1.0.0",
 }
 

@@ -13,7 +13,7 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/go-kyugo/kyugo/internal/ui"
+	"github.com/go-kyugo/kygo/internal/ui"
 )
 
 //go:embed templates/*.gotmpl
@@ -47,7 +47,7 @@ var CreateCmd = &cobra.Command{
 			return err
 		}
 
-		module := "kyugo.dev/kyugo-cli/v1"
+		module := "github.com/go-kyugo/kygo"
 		root := cwd
 		modPath := filepath.Join(root, "go.mod")
 		if _, err := os.Stat(modPath); os.IsNotExist(err) {
