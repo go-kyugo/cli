@@ -12,6 +12,8 @@ import (
 	"time"
 
 	"github.com/spf13/cobra"
+
+	"kyugo.dev/kyugo-cli/v1/internal/ui"
 )
 
 //go:embed templates/*.gotmpl
@@ -28,8 +30,8 @@ var CreateCmd = &cobra.Command{
 
 		if len(args) == 0 {
 			_ = cmd.Help()
-			fmt.Println()
-			fmt.Println("usage: kyugo create <type> <name>")
+			ui.Println()
+			ui.Usage("usage: kyugo create <type> <name>")
 			return nil
 		}
 
@@ -55,7 +57,7 @@ var CreateCmd = &cobra.Command{
 		if err := Generate(root, module, kind, name); err != nil {
 			return err
 		}
-		fmt.Println("Created", kind, name)
+		ui.Successf("Created %s %s", kind, name)
 		return nil
 	},
 }
@@ -83,7 +85,7 @@ func CreateKindCmd(kind string) *cobra.Command {
 			if err := Generate(root, module, kind, name); err != nil {
 				return err
 			}
-			fmt.Println("Created", kind, name)
+			ui.Successf("Created %s %s", kind, name)
 			return nil
 		},
 	}

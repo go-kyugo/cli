@@ -9,6 +9,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"kyugo.dev/kyugo-cli/v1/internal/config"
+	"kyugo.dev/kyugo-cli/v1/internal/ui"
 )
 
 func Run(migrationsPath, database string, args ...string) error {
@@ -19,6 +20,8 @@ func Run(migrationsPath, database string, args ...string) error {
 	if err != nil {
 		return fmt.Errorf("migrate binary not found in PATH: %w", err)
 	}
+
+	ui.Info(fmt.Sprintf("Running migrations from %s -> %s", migrationsPath, database))
 	abs, err := filepath.Abs(migrationsPath)
 	if err != nil {
 		return err
@@ -29,7 +32,12 @@ func Run(migrationsPath, database string, args ...string) error {
 	cmd := exec.Command(bin, cmdArgs...)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
-	return cmd.Run()
+	err = cmd.Run()
+	if err != nil {
+		return err
+	}
+	ui.Success("Migrations completed")
+	return nil
 }
 
 func makeUpCmd() *cobra.Command {

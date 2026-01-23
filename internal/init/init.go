@@ -11,6 +11,8 @@ import (
 	"text/template"
 
 	"github.com/spf13/cobra"
+
+	"kyugo.dev/kyugo-cli/v1/internal/ui"
 )
 
 //go:embed templates/project/**
@@ -134,7 +136,7 @@ func MakeInitCmd() *cobra.Command {
 			if err := removeKEEPs(outDir); err != nil {
 				return err
 			}
-			fmt.Println("Created project in", outDir)
+			ui.Successf("Created project in %s", outDir)
 			return nil
 		},
 	}

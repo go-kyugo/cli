@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -9,11 +8,13 @@ import (
 	"kyugo.dev/kyugo-cli/v1/internal/create"
 	initpkg "kyugo.dev/kyugo-cli/v1/internal/init"
 	migrate "kyugo.dev/kyugo-cli/v1/internal/migrate"
+	"kyugo.dev/kyugo-cli/v1/internal/ui"
 )
 
 var rootCmd = &cobra.Command{
-	Use:   "kyugo",
-	Short: "kyugo CLI",
+	Use:     "kyugo",
+	Short:   "Kyugo CLI",
+	Version: "1.0.0",
 }
 
 func init() {
@@ -28,7 +29,7 @@ func init() {
 
 func main() {
 	if err := rootCmd.Execute(); err != nil {
-		fmt.Fprintln(os.Stderr, err)
+		ui.Errorf("%v", err)
 		os.Exit(1)
 	}
 }
