@@ -1,4 +1,4 @@
-module kyugo.dev/kyugo-cli/v1
+module github.com/go-kyugo/kyugo-cli
 
 go 1.25.6
 
