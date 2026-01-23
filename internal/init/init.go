@@ -12,7 +12,7 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/go-kyugo/kyugo-cli/internal/ui"
+	"github.com/go-kyugo/kyugo/internal/ui"
 )
 
 //go:embed templates/project/**
