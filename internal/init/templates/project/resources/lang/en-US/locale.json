@@ -1,0 +1,8 @@
+{
+  "hello": "Hello",
+  "welcome": "Welcome to {{ .Name }}",
+  "errors": {
+    "not_found": "Not found",
+    "internal": "Internal server error"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "user": {
+    "name": "Name",
+    "email": "Email"
+  },
+  "product": {
+    "name": "Name",
+    "price": "Price"
+  }
+}

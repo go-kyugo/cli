@@ -55,7 +55,7 @@ var CreateCmd = &cobra.Command{
 		if err := Generate(root, module, kind, name); err != nil {
 			return err
 		}
-		fmt.Println("created", kind, name)
+		fmt.Println("Created", kind, name)
 		return nil
 	},
 }
@@ -83,7 +83,7 @@ func CreateKindCmd(kind string) *cobra.Command {
 			if err := Generate(root, module, kind, name); err != nil {
 				return err
 			}
-			fmt.Println("created", kind, name)
+			fmt.Println("Created", kind, name)
 			return nil
 		},
 	}
