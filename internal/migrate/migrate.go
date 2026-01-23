@@ -8,8 +8,8 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"kyugo.dev/kyugo-cli/v1/internal/config"
-	"kyugo.dev/kyugo-cli/v1/internal/ui"
+	"github.com/go-kyugo/kyugo-cli/internal/config"
+	"github.com/go-kyugo/kyugo-cli/internal/ui"
 )
 
 func Run(migrationsPath, database string, args ...string) error {

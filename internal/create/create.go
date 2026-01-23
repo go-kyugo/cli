@@ -13,7 +13,7 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"kyugo.dev/kyugo-cli/v1/internal/ui"
+	"github.com/go-kyugo/kyugo-cli/internal/ui"
 )
 
 //go:embed templates/*.gotmpl
