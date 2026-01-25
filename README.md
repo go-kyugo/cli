@@ -1,4 +1,6 @@
 # kygo CLI
+````markdown
+# kygo CLI
 
 Installation
 
@@ -65,5 +67,18 @@ The CLI exposes the following commands (use `kygo --help` for details):
 	- `migrate rollback [steps]`: rollback (down) migrations (defaults to 1 step). Example: `kygo migrate rollback`.
 	- `migrate force <version>`: set migration version without running migrations. Example: `kygo migrate force 20230101120000`.
 	- `migrate version`: print current migration version and state.
+
+
+Swagger
+
+- `swagger <subcommand>`: Swagger generation and tooling.
+  - `swagger init` / `swagger generate`: Generate swagger docs from annotations (runs `go run github.com/swaggo/swag/cmd/swag@latest init`). Default output directory is `resources/docs`.
+  - Flags:
+    - `-C, --dir` Project directory (default `.`)
+    - `-g, --main` Main file to analyze (default `main.go`)
+    - `-o, --out` Output directory for Swagger docs (default `resources/docs`)
+  - Example: `kygo swagger init -C . -g main.go` (generates docs in `resources/docs`)
+
+````
 
 
