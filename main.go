@@ -8,6 +8,7 @@ import (
 	"github.com/go-kyugo/kygo/internal/create"
 	initpkg "github.com/go-kyugo/kygo/internal/init"
 	migrate "github.com/go-kyugo/kygo/internal/migrate"
+	"github.com/go-kyugo/kygo/internal/swagger"
 	"github.com/go-kyugo/kygo/internal/ui"
 )
 
@@ -25,6 +26,7 @@ func init() {
 		create.CreateCmd.AddCommand(create.CreateKindCmd(k))
 	}
 	rootCmd.AddCommand(migrate.MigrateCmd())
+	rootCmd.AddCommand(swagger.SwaggerCmd())
 }
 
 func main() {

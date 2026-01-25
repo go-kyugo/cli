@@ -56,6 +56,7 @@ func MakeInitCmd() *cobra.Command {
 				"http/controller",
 				"http/middleware",
 				"http/validation",
+				"http/route",
 				"dto",
 				"service",
 				"resources/lang/en-US",

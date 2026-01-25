@@ -1,0 +1,17 @@
+package route
+
+import (
+	"github.com/go-kyugo/kyugo"
+)
+
+// Routing is an essential part of any Kyugo application.
+// Defining routes is the action of associating a URI, sometimes having parameters,
+// with a handler which will process the request and respond to it.
+//
+// This file contains your main route registering function that is passed to server.RegisterRoutes().
+
+func Register(server *kyugo.Server, router *kyugo.Router) {
+    // Example route:
+    // router.Get("/hello/{name}", func(response *kyugo.Response, request *kyugo.Request) {
+    // 	name := request.PathParam("name")
+}
