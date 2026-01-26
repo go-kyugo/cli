@@ -6,14 +6,16 @@ import (
 )
 
 // Controller handles requests for {{ .Name }} resources
-type Controller struct{}
+type Controller struct {
+	kyugo.Component
+}
 
 func NewController() *Controller {
     return &Controller{}
 }
 
 func (ctrl *Controller) Init(s *kyugo.Server) {
-
+    ctrl.Component.Init(s)
 }
 
 func (c *Controller) Index(resp *kyugo.Response, req *kyugo.Request) {}

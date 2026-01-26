@@ -186,7 +186,79 @@ func Generate(root, module, kind, name string) error {
 	}
 
 	dir := kindDir(kind, n)
-	return writeFile(root, dir, filename, buf.Bytes())
+	if err := writeFile(root, dir, filename, buf.Bytes()); err != nil {
+		return err
+	}
+
+	// If we just created a controller, ensure it's registered in http/route/route.go
+	if kind == "controller" {
+		routePath := filepath.Join(root, "http", "route", "route.go")
+		if _, err := os.Stat(routePath); err == nil {
+			b, err := os.ReadFile(routePath)
+			if err == nil {
+				s := string(b)
+
+				// If the file already references the controller's NewController(), do nothing
+				if !strings.Contains(s, data.Name+".NewController()") {
+					// Ensure import for the controller package exists
+					importPath := module + "/http/controller/" + data.Name
+					if !strings.Contains(s, "\""+importPath+"\"") {
+						if impIdx := strings.Index(s, "import ("); impIdx != -1 {
+							// find end of import block
+							rest := s[impIdx:]
+							if impEnd := strings.Index(rest, ")"); impEnd != -1 {
+								newImportBlock := rest[:impEnd] + "\n\t\"" + importPath + "\"" + rest[impEnd:]
+								s = s[:impIdx] + newImportBlock + s[impIdx+len(rest):]
+							}
+						} else if singleImpIdx := strings.Index(s, "import \""); singleImpIdx != -1 {
+							// convert single import to block
+							// find end of the import line
+							lineEnd := strings.Index(s[singleImpIdx:], "\n")
+							if lineEnd != -1 {
+								before := s[:singleImpIdx]
+								impLine := s[singleImpIdx : singleImpIdx+lineEnd]
+								after := s[singleImpIdx+lineEnd:]
+								impLine = strings.TrimSpace(impLine)
+								impLine = strings.TrimPrefix(impLine, "import ")
+								newBlock := "import (\n\t" + strings.Trim(impLine, "\"") + "\n\t\"" + importPath + "\"\n)"
+								s = before + newBlock + after
+							}
+						}
+					}
+
+					// Insert router.Controller(...) before the end of Register()
+					if regIdx := strings.Index(s, "func Register("); regIdx != -1 {
+						// find the opening brace of the function
+						if braceIdx := strings.Index(s[regIdx:], "{"); braceIdx != -1 {
+							pos := regIdx + braceIdx
+							// scan to matching closing brace
+							count := 0
+							i := pos
+							for ; i < len(s); i++ {
+								if s[i] == '{' {
+									count++
+								} else if s[i] == '}' {
+									count--
+									if count == 0 {
+										break
+									}
+								}
+							}
+							if i < len(s) {
+								line := "\n\trouter.Controller(" + data.Name + ".NewController())\n"
+								s = s[:i] + line + s[i:]
+							}
+						}
+					}
+
+					// write back modified route.go
+					_ = os.WriteFile(routePath, []byte(s), 0644)
+				}
+			}
+		}
+	}
+
+	return nil
 }
 
 func sanitizeName(s string) string {
